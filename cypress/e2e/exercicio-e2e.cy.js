@@ -2,7 +2,7 @@
 const perfil = require('/Users/gabrieltonelli/repositorios/EBAC-ExercicioModuloCypress/cypress/fixtures/perfil.json')
 import paginaProdutos from '/Users/gabrieltonelli/repositorios/EBAC-ExercicioModuloCypress/cypress/support/page_objects/paginaProdutos.js.js'
 
-// context('Exercicio - Testes End-to-end - Fluxo de pedido', () => {
+context('Exercicio - Testes End-to-end - Fluxo de pedido', () => {
 //   /*  Como cliente 
 //       Quero acessar a Loja EBAC 
 //       Para fazer um pedido de 4 produtos 
@@ -10,21 +10,21 @@ import paginaProdutos from '/Users/gabrieltonelli/repositorios/EBAC-ExercicioMod
 //       Adicionando ao carrinho
 //       Preenchendo todas opções no checkout
 //       E validando minha compra ao final */
+
 describe('Funcionalidade: Compra de produtos como cliente', () => {
     
     beforeEach(() => {
-        cy.visit('produtos')
-    });
-  
-    it('Deve realizar compra de 4 produtos', () => {
-        /// Fazendo login como cliente
+        /// Acessando a Loja EBAC e fazendo login como cliente
         cy.visit('minha-conta')
         cy.get('#username').type(perfil.usuario)
         cy.get('#password').type(perfil.senha)
         cy.get('.woocommerce-form > .button').click()
 
         cy.get('.woocommerce-MyAccount-content > :nth-child(3)').should('exist')
-
+    });
+  
+    it('Deve realizar compra de 4 produtos', () => {
+        
         /// Adicionando produtos específicos ao carrinho
         cy.fixture('produtos').then(dados => {
             paginaProdutos.buscarProduto(dados[0].nomeProduto)
@@ -46,18 +46,20 @@ describe('Funcionalidade: Compra de produtos como cliente', () => {
             paginaProdutos.addProdutoCarrinho(dados[3].tamanho, dados[3].cor, dados[3].quantidade)
             cy.get('.woocommerce-message').should('contain', dados[3].nomeProduto)
             cy.get('.dropdown-toggle > .mini-cart-items').should('contain', 4)
+        })
+    });
+    it('Deve fazer checkout e validar compra', () => {
+        ///Acessando o carrinho, fazendo checkout e validando compra
+        cy.get('.dropdown-toggle > .text-skin > .icon-basket').click()
+        cy.get('#cart > .dropdown-menu > .widget_shopping_cart_content > .mini_cart_content > .mini_cart_inner > .mcart-border > .buttons > .checkout').click()
+        cy.get('#order_comments').type('Pode entregar ao porteiro Márcio')
+        cy.get('#payment_method_cod').click()
+        cy.get('.wc_payment_method.payment_method_cod > .payment_box').should('contain', 'Pagar em dinheiro na entrega.')
+        cy.get('#terms').click()
+        cy.get('#place_order').click()
+        cy.wait(1000)
+        cy.get('.woocommerce-notice').should('contain', 'Obrigado. Seu pedido foi recebido.')
+    });
     
-            ///Acessando o carrinho, fazendo checkout e validando compra
-            cy.get('.dropdown-toggle > .text-skin > .icon-basket').click()
-            cy.get('#cart > .dropdown-menu > .widget_shopping_cart_content > .mini_cart_content > .mini_cart_inner > .mcart-border > .buttons > .checkout').click()
-            cy.get('#order_comments').type('Pode entregar ao porteiro Márcio')
-            cy.get('#payment_method_cod').click()
-            cy.get('.wc_payment_method.payment_method_cod > .payment_box').should('contain', 'Pagar em dinheiro na entrega.')
-            cy.get('#terms').click()
-            cy.get('#place_order').click()
-            cy.wait(1000)
-            cy.get('.woocommerce-notice').should('contain', 'Obrigado. Seu pedido foi recebido.')
-
-        });
-    })
+})
 })
