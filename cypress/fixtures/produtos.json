@@ -1,0 +1,26 @@
+[
+    {
+        "nomeProduto": "Abominable Hoodie",
+        "tamanho": "L",
+        "cor": "Blue",
+        "quantidade": 1
+    },
+    {
+        "nomeProduto": "Aero Daily Fitness Tee",
+        "tamanho": "S",
+        "cor": "Black",
+        "quantidade": 1
+    },
+    {
+        "nomeProduto": "Ariel Roll Sleeve Sweatshirt",
+        "tamanho": "L",
+        "cor": "Purple",
+        "quantidade": 1
+    },
+    {
+        "nomeProduto": "Erica Evercool Sports Bra",
+        "tamanho": "M",
+        "cor": "Orange",
+        "quantidade": 1
+    }
+]
