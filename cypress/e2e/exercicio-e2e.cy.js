@@ -23,7 +23,7 @@ describe('Funcionalidade: Compra de produtos como cliente', () => {
         cy.get('.woocommerce-MyAccount-content > :nth-child(3)').should('exist')
     });
   
-    it('Deve realizar compra de 4 produtos', () => {
+    it('Deve realizar compra de 4 produtos e fazer checkout da compra', () => {
         
         /// Adicionando produtos específicos ao carrinho
         cy.fixture('produtos').then(dados => {
@@ -46,20 +46,16 @@ describe('Funcionalidade: Compra de produtos como cliente', () => {
             paginaProdutos.addProdutoCarrinho(dados[3].tamanho, dados[3].cor, dados[3].quantidade)
             cy.get('.woocommerce-message').should('contain', dados[3].nomeProduto)
             cy.get('.dropdown-toggle > .mini-cart-items').should('contain', 4)
+            
+            ///Acessando o carrinho, fazendo checkout e validando compra
+            cy.visit('checkout')
+            cy.get('#order_comments').type('Pode entregar ao porteiro Márcio')
+            cy.get('#payment_method_cod').click()
+            cy.get('.wc_payment_method.payment_method_cod > .payment_box').should('contain', 'Pagar em dinheiro na entrega.')
+            cy.get('#terms').click()
+            cy.get('#place_order').click()
+            cy.get('.woocommerce-notice', {timeout:10000}).should('contain', 'Obrigado. Seu pedido foi recebido.')
         })
     });
-    it('Deve fazer checkout e validar compra', () => {
-        ///Acessando o carrinho, fazendo checkout e validando compra
-        cy.get('.dropdown-toggle > .text-skin > .icon-basket').click()
-        cy.get('#cart > .dropdown-menu > .widget_shopping_cart_content > .mini_cart_content > .mini_cart_inner > .mcart-border > .buttons > .checkout').click()
-        cy.get('#order_comments').type('Pode entregar ao porteiro Márcio')
-        cy.get('#payment_method_cod').click()
-        cy.get('.wc_payment_method.payment_method_cod > .payment_box').should('contain', 'Pagar em dinheiro na entrega.')
-        cy.get('#terms').click()
-        cy.get('#place_order').click()
-        cy.wait(1000)
-        cy.get('.woocommerce-notice').should('contain', 'Obrigado. Seu pedido foi recebido.')
-    });
-    
 })
 })
